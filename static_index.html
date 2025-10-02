@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Storage Monitor</title>
+  <script>
+    async function fetchUsage() {
+      const res = await fetch('/storage');
+      const data = await res.json();
+      document.getElementById("usage").innerText =
+        `Used: ${data.used_mb} MB / ${data.storage_limit_mb} MB (${data.percent_used}%)`;
+    }
+    setInterval(fetchUsage, 5000);
+    window.onload = fetchUsage;
+  </script>
+</head>
+<body>
+  <h1>Storage Monitor</h1>
+  <p id="usage">Loading...</p>
+</body>
+</html>
