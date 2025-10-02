@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Storage Dashboard</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; }
+    h1 { text-align: center; }
+    .bar { width: 100%; background: #ddd; border-radius: 10px; overflow: hidden; margin: 20px 0; height: 30px; }
+    .fill { height: 100%; text-align: center; color: white; line-height: 30px; transition: width 0.5s;
+            background: linear-gradient(90deg, #4caf50, #2e7d32); }
+    #status { text-align: center; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h1>Storage Usage</h1>
+
+  <div class="bar">
+    <div id="fill" class="fill">0%</div>
+  </div>
+
+  <div id="status">Loading...</div>
+
+  <script>
+    async function updateStatus() {
+      try {
+        const res = await fetch("/health");
+        const data = await res.json();
+
+        const used = data.used_mb.toFixed(2);
+        const limit = data.limit_mb;
+        const percent = Math.min((used / limit) * 100, 100);
+
+        const fill = document.getElementById("fill");
+        fill.style.width = percent + "%";
+        fill.textContent = percent.toFixed(1) + "%";
+
+        document.getElementById("status").textContent =
+          `Used: ${used} MB / ${limit} MB`;
+      } catch (err) {
+        document.getElementById("status").textContent = "Error fetching status.";
+      }
+    }
+
+    updateStatus();
+    setInterval(updateStatus, 5000);
+  </script>
+</body>
+</html>
